@@ -15,8 +15,8 @@ Jira Plugin Info Tol
 
 **Authentication**
 
-* .netrc file used to provide logging credentials
-* Remember .netrc file protection!  (chmod 600 .netrc. )
+* .netrc file used to provide logging credentials (lives in home directory)
+* Remember .netrc file protection!  (chmod 600 .netrc )
 * .netrc content example
 
 ```python
