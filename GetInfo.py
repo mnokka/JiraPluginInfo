@@ -37,7 +37,7 @@ def main(argv):
     Gets info for installed plugins in Jira
     
     
-    EXAMPLE: python {1}  -j http://jira.test.com -p BUILD -s "summary text"
+    EXAMPLE: python {1}  -j http://jira.test.com 
 
 
     """.format(__version__,sys.argv[0]))
@@ -45,8 +45,7 @@ def main(argv):
     #parser.add_argument('-p','--project', help='<JIRA project key>')
     parser.add_argument('-j','--jira', help='<Target JIRA address>')
     parser.add_argument('-v','--version', help='<Version>', action='store_true')
-    #parser.add_argument('-s','--summary', help='<JIRA issue summary>')
-    parser.add_argument('-d','--description', help='<JIRA issue description>')
+  
     
     args = parser.parse_args()
         
@@ -57,8 +56,7 @@ def main(argv):
          
 
     JIRASERVICE = args.jira or ''
-   
-    JIRADESCRIPTION = args.description or ''
+
   
   
     # quick old-school way to check needed parameters
