@@ -19,9 +19,13 @@ Jira Plugin Info Tol
 * Remember .netrc file protection!  (chmod 600 .netrc. )
 * .netrc content example
 
-	machine jira.mycompany.com
-	login myadmin_account
-	password mypassword
+```python
+machine jira.mycompany.com
+	
+login myadmin_account
+	
+password mypassword
+```
 
 **Usage**
 
