@@ -15,6 +15,7 @@ import requests
 requests.packages.urllib3.disable_warnings()
 import itertools, re, sys
 from jira import JIRA
+import json
 
 
 
@@ -149,6 +150,12 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
     
     if (r.status_code == requests.codes.ok):
         print ("ok")
+        data = json.loads(r.text)
+        print "*********************"
+        print "*********************"
+        print "*********************"
+        print "DATA:{0}".format(data)
+        print "*********************"
     else:
         print ("FAIL")
     
