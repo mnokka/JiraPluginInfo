@@ -134,16 +134,18 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
     print "diggin part"
     
     headers = {'Content-Type': 'application/json'}
+    #headers = {'X-Atlassian-Token': 'nocheck'}
     
     # TOIMII URL="{0}/rest/zapi/latest/teststep/11325/1".format(JIRASERVICE)
-    URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)
+    # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)
+    URL="{0}/rest/plugins/1.0/".format(JIRASERVICE)
     #URL="{0}/rest/api/2/".format(JIRASERVICE)
     #requests.post('https://bamboo.almdemo.fi/rest/api/latest/queue/GITHUBINT-SGF', data=data, auth=(user, password))
     r=requests.get(URL, headers,  auth=(user, PASSWORD))
     #''http://bamboo.almdemo.fi/rest/api/latest/queue/GITHUBINT-SGF'
     
-    print ("Headers:{0}".format(r.headers))
-    print ("VIESTI:{0}".format(r.text))
+    print "Headers:{0}".format(r.headers)
+    print "VIESTI:{0}".format((r.text).encode('utf-8'))
     
     if (r.status_code == requests.codes.ok):
         print ("ok")
