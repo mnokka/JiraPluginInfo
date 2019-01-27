@@ -166,6 +166,10 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
         print(json.dumps(sorted_data, indent=4, sort_keys=True))
         #pprint.pprint(data)
         
+        for item in sorted_data:
+            if (item["enabled"] and item["userInstalled"] and item["usesLicensing"]):
+                    print "LICENCED: {0}".format(item["name"])
+        
     else:
         print ("FAIL")
     
