@@ -167,22 +167,26 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
         #pprint.pprint(data)
         
         for item in sorted_data:
-            pluginkey = item["key"]
-            URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey)
-            r=requests.get(URL, headers,  auth=(user, PASSWORD))
-            #print "Headers:{0}".format(r.headers)
-            #print "VIESTI:{0}".format((r.text).encode('utf-8'))
-            licenseinfo = json.loads(r.text)
-           # print(json.dumps(licenseinfo, indent=4, sort_keys=True))
-            if "maintenanceExpiryDate" in licenseinfo:
-                #ExpDate=licenseinfo["maintenanceExpiryDate"]
-                ExpDate=licenseinfo["maintenanceExpiryDateString"]
-               
+           
+
+            if (item["enabled"] and item["userInstalled"] and item["usesLicensing"]): 
+                pluginkey = item["key"]
+                URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey)
+                r=requests.get(URL, headers,  auth=(user, PASSWORD))
+                #print "Headers:{0}".format(r.headers)
+                #print "VIESTI:{0}".format((r.text).encode('utf-8'))
+                licenseinfo = json.loads(r.text)
+                # print(json.dumps(licenseinfo, indent=4, sort_keys=True))
+                if "maintenanceExpiryDate" in licenseinfo:
+                    #ExpDate=licenseinfo["maintenanceExpiryDate"]
+                    ExpDate=licenseinfo["maintenanceExpiryDateString"]
+                else:
+                    ExpDate="NONENONE"
                 #print "EXPDATA:{0}".format(ExpDate)
                 #d = time.strptime(sdate, '%d/%b/%y')
-
-            if (item["enabled"] and item["userInstalled"] and item["usesLicensing"]):
-                    print "LICENCED:{0:35s} VERSION:{1} KEY:{2} EXPDATE:{3}".format(item["name"],item["version"],pluginkey,ExpDate)
+                print "LICENCED:{0:35s} VERSION:{1} KEY:{2} EXPDATE:{3}".format(item["name"],item["version"],pluginkey,ExpDate)
+            
+            
             #print "-------------------------------------------------------------------------"
     else:
         print ("FAIL")
