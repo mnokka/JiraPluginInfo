@@ -16,6 +16,7 @@ requests.packages.urllib3.disable_warnings()
 import itertools, re, sys
 from jira import JIRA
 import json
+import pprint
 
 
 
@@ -156,6 +157,15 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
         print "*********************"
         print "DATA:{0}".format(data)
         print "*********************"
+        print "DUMPS:"
+        #parsed = json.loads(data)
+        print(json.dumps(data, indent=4, sort_keys=True))
+
+        sorted_data = sorted(data["plugins"], key=lambda k: k['name'])
+        print "SORTED_DATA:"
+        print(json.dumps(sorted_data, indent=4, sort_keys=True))
+        #pprint.pprint(data)
+        
     else:
         print ("FAIL")
     
