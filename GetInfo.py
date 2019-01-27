@@ -162,8 +162,8 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
         print(json.dumps(data, indent=4, sort_keys=True))
 
         sorted_data = sorted(data["plugins"], key=lambda k: k['name'])
-        print "SORTED_DATA:"
-        print(json.dumps(sorted_data, indent=4, sort_keys=True))
+        #print "SORTED_DATA:"
+        #print(json.dumps(sorted_data, indent=4, sort_keys=True))
         #pprint.pprint(data)
         
         for item in sorted_data:
@@ -173,13 +173,17 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
             #print "Headers:{0}".format(r.headers)
             #print "VIESTI:{0}".format((r.text).encode('utf-8'))
             licenseinfo = json.loads(r.text)
-            print(json.dumps(licenseinfo, indent=4, sort_keys=True))
+           # print(json.dumps(licenseinfo, indent=4, sort_keys=True))
             if "maintenanceExpiryDate" in licenseinfo:
-                ExpDate=licenseinfo["maintenanceExpiryDate"]
-                print "EXPDATA:{0}".format(ExpDate)
+                #ExpDate=licenseinfo["maintenanceExpiryDate"]
+                ExpDate=licenseinfo["maintenanceExpiryDateString"]
+               
+                #print "EXPDATA:{0}".format(ExpDate)
+                #d = time.strptime(sdate, '%d/%b/%y')
+
             if (item["enabled"] and item["userInstalled"] and item["usesLicensing"]):
-                    print "LICENCED:{0:35s} VERSION:{1} KEY:{2}".format(item["name"],item["version"],pluginkey)
-            print "-------------------------------------------------------------------------"
+                    print "LICENCED:{0:35s} VERSION:{1} KEY:{2} EXPDATE:{3}".format(item["name"],item["version"],pluginkey,ExpDate)
+            #print "-------------------------------------------------------------------------"
     else:
         print ("FAIL")
     
