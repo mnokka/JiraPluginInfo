@@ -29,10 +29,11 @@ password mypassword
 
 **Usage**
 
-
+```python
   python GetInfo.py -j https://jira.mycompany.com
+  
   with trafic and header info: python GetInfo.py -j https://jira.mycompany.com -d ON
-
+```
 
 **Author**
 mika.nokka1@gmail.com
