@@ -20,7 +20,7 @@ import pprint
 from datetime import date
 
 
-__version__ = "0.1"
+__version__ = "0.9"
 thisFile = __file__
 
     
@@ -40,12 +40,15 @@ def main(argv):
     
     
     EXAMPLE: python {1}  -j http://jira.test.com 
+    
+    debugmode: -d ON
 
 
     """.format(__version__,sys.argv[0]))
 
     #parser.add_argument('-p','--project', help='<JIRA project key>')
     parser.add_argument('-j','--jira', help='<Target JIRA address>')
+    parser.add_argument('-d','--debug', help='<Debug Mode>')
     parser.add_argument('-v','--version', help='<Version>', action='store_true')
   
     
@@ -58,7 +61,7 @@ def main(argv):
          
 
     JIRASERVICE = args.jira or ''
-
+    DEBUG=args.debug or False 
   
   
     # quick old-school way to check needed parameters
@@ -66,12 +69,12 @@ def main(argv):
         parser.print_help()
         sys.exit(2)
 
-    user, PASSWORD = Authenticate(JIRASERVICE)
+    user, PASSWORD = Authenticate(JIRASERVICE,DEBUG)
     jira= DoJIRAStuff(user,PASSWORD,JIRASERVICE)
     #CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION)
-    GetStepInfo(jira,JIRASERVICE,user,PASSWORD)    
+    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG)    
 ####################################################################################################    
-def Authenticate(JIRASERVICE):
+def Authenticate(JIRASERVICE,DEBUG):
     host=JIRASERVICE
     credentials = netrc.netrc()
     auth = credentials.authenticators(host)
@@ -97,7 +100,9 @@ def Authenticate(JIRASERVICE):
         print "--> ERROR: Apparantly user authentication gone wrong. EXITING!"
         sys.exit(1)
     else:
-        print "Authentication OK \nHEADER: {0}".format(header)    
+        print "Authentication OK"
+        if (DEBUG):
+          print"HEADER: {0}".format(header)    
     print "---------------------------------------------------------"
     return user,PASSWORD
 
@@ -132,70 +137,68 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION):
         sys.exit(1)
 
 ####################################################################################
-def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
-    print "diggin part"
+def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG):
+    
+    print "Debug:{0}".format(DEBUG)
     
     headers = {'Content-Type': 'application/json'}
-    #headers = {'X-Atlassian-Token': 'nocheck'}
-    
-    # TOIMII URL="{0}/rest/zapi/latest/teststep/11325/1".format(JIRASERVICE)
-    # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)
-    URL="{0}/rest/plugins/1.0/".format(JIRASERVICE)
+    # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)  # server license info
+    URL="{0}/rest/plugins/1.0/".format(JIRASERVICE) # get plugins
     #URL="{0}/rest/api/2/".format(JIRASERVICE)
-    #requests.post('https://bamboo.almdemo.fi/rest/api/latest/queue/GITHUBINT-SGF', data=data, auth=(user, password))
     r=requests.get(URL, headers,  auth=(user, PASSWORD))
-    #''http://bamboo.almdemo.fi/rest/api/latest/queue/GITHUBINT-SGF'
-    
-    print "Headers:{0}".format(r.headers)
-    print "VIESTI:{0}".format((r.text).encode('utf-8'))
+ 
+    if (DEBUG):
+        print "Headers:{0}".format(r.headers)
+        print "VIESTI:{0}".format((r.text).encode('utf-8'))
     
     if (r.status_code == requests.codes.ok):
         print ("ok")
         data = json.loads(r.text)
-        print "*********************"
-        print "*********************"
-        print "*********************"
-        print "DATA:{0}".format(data)
-        print "*********************"
-        print "DUMPS:"
-        #parsed = json.loads(data)
-        print(json.dumps(data, indent=4, sort_keys=True))
+        if (DEBUG):
+            print "PLUGIN RAW DATA:{0}".format(data)
+            print "*********************"
+            print "SORTED DATA:"
+            print(json.dumps(data, indent=4, sort_keys=True))
 
         sorted_data = sorted(data["plugins"], key=lambda k: k['name'])
-        #print "SORTED_DATA:"
-        #print(json.dumps(sorted_data, indent=4, sort_keys=True))
-        #pprint.pprint(data)
+        if (DEBUG):
+            print "PLUGIN NAME SORTED_DATA:"
+            print(json.dumps(sorted_data, indent=4, sort_keys=True))
+            pprint.pprint(data) # jsut tested pprint library
         
         for item in sorted_data:
            
 
             if (item["enabled"] and item["userInstalled"] and item["usesLicensing"]): 
                 pluginkey = item["key"]
-                URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey)
+                URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey) # license info for one plugin (key)
                 r=requests.get(URL, headers,  auth=(user, PASSWORD))
-                #print "Headers:{0}".format(r.headers)
-                #print "VIESTI:{0}".format((r.text).encode('utf-8'))
+                if (DEBUG):
+                    print "Headers:{0}".format(r.headers)
+                    print "VIESTI:{0}".format((r.text).encode('utf-8'))
+                
+                # TODO: SHOULD CHECK FAIL
                 licenseinfo = json.loads(r.text)
-                # print(json.dumps(licenseinfo, indent=4, sort_keys=True))
+                if (DEBUG):
+                    print(json.dumps(licenseinfo, indent=4, sort_keys=True))
+                
+                print "PLUGIN:{0:35s} VERSION:{1:10s} KEY:{2:40s}".format(item["name"],item["version"],pluginkey)
+                
                 if "maintenanceExpiryDate" in licenseinfo:
-                    #ExpDate=licenseinfo["maintenanceExpiryDate"]
+                    #ExpDate=licenseinfo["maintenanceExpiryDate"] # the mystical number string
                     ExpDate=licenseinfo["maintenanceExpiryDateString"]
+                    print "EXPIRATION DATE:{0}".format(ExpDate)
                     Converdate = datetime.datetime.strptime(ExpDate, '%d/%b/%y')
-                    Fiveweeks = datetime.datetime.now() - datetime.timedelta(weeks=2)
+                    #Twoweeks = datetime.datetime.now() - datetime.timedelta(weeks=2)
                     if (datetime.datetime.now() < Converdate):
-                        print "LICENCE VALID"
                         Exprdelta=(Converdate - datetime.datetime.now()).days
-                        print "TO BE EXPIRED:{0}".format(Exprdelta)
+                        print "--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta)
                     if(datetime.datetime.now() > Converdate):
-                        print "LICENCE EXPIRED. ARGH"
+                        print "--> ERROR: LICENCE EXPIRED. ARGH"
                         
                 else:
-                    ExpDate="NONENONE"
-                #print "EXPDATA:{0}".format(ExpDate)
-                
-                print "LICENCED:{0:35s} VERSION:{1:10s} KEY:{2:40s} EXPDATE:{3}".format(item["name"],item["version"],pluginkey,ExpDate)
-                print "CONVERTED DATE:{0}".format(Converdate)
-                print "---------------------------------------------------"
+                    ExpDate="NONENONE" # dead code
+                print "------------------------------------------------------------------------------------------"
             
             #print "-------------------------------------------------------------------------"
     else:
