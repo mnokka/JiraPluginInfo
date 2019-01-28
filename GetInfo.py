@@ -17,7 +17,7 @@ import itertools, re, sys
 from jira import JIRA
 import json
 import pprint
-
+from datetime import date
 
 
 __version__ = "0.1"
@@ -180,12 +180,22 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD):
                 if "maintenanceExpiryDate" in licenseinfo:
                     #ExpDate=licenseinfo["maintenanceExpiryDate"]
                     ExpDate=licenseinfo["maintenanceExpiryDateString"]
+                    Converdate = datetime.datetime.strptime(ExpDate, '%d/%b/%y')
+                    Fiveweeks = datetime.datetime.now() - datetime.timedelta(weeks=2)
+                    if (datetime.datetime.now() < Converdate):
+                        print "LICENCE VALID"
+                        Exprdelta=(Converdate - datetime.datetime.now()).days
+                        print "TO BE EXPIRED:{0}".format(Exprdelta)
+                    if(datetime.datetime.now() > Converdate):
+                        print "LICENCE EXPIRED. ARGH"
+                        
                 else:
                     ExpDate="NONENONE"
                 #print "EXPDATA:{0}".format(ExpDate)
-                #d = time.strptime(sdate, '%d/%b/%y')
-                print "LICENCED:{0:35s} VERSION:{1} KEY:{2} EXPDATE:{3}".format(item["name"],item["version"],pluginkey,ExpDate)
-            
+                
+                print "LICENCED:{0:35s} VERSION:{1:10s} KEY:{2:40s} EXPDATE:{3}".format(item["name"],item["version"],pluginkey,ExpDate)
+                print "CONVERTED DATE:{0}".format(Converdate)
+                print "---------------------------------------------------"
             
             #print "-------------------------------------------------------------------------"
     else:
