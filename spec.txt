@@ -1,0 +1,25 @@
+-j --> jira server
+-a alarm date limit
+	-a 10 alarm if 10 days to any license expiration
+	
+	
+	RETURN STATUS
+		STATUS: Green : all license valid and expiration datea > alarm date limit
+		STATUS: RED: 1-n licenses expired
+		STATUS: Yellow: 1-n licenses expiration date < alarm date limit
+		
+	
+	OUTPUT:
+	
+PLUGIN:Actions for JIRA Service Desk       
+VERSION:1.3.28     
+KEY:com.intenso.jira.plugins.actions.jsd-actions
+EXPIRATION DATE:05/Oct/16
+--> ERROR: LICENCE EXPIRED. ARGH
+------------------------------------------------------------------------------------------
+PLUGIN:Adaptavist ScriptRunner for JIRA    
+VERSION:5.4.40     
+KEY:com.onresolve.jira.groovy.groovyrunner  
+EXPIRATION DATE:27/Feb/19
+--> LICENCE IS VALID ---> TO BE EXPIRED IN:29 DAYS
+------------------------------------------------------------------------------------------
