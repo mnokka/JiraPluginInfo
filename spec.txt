@@ -7,6 +7,7 @@
 		STATUS: Green : all license valid and expiration datea > alarm date limit
 		STATUS: RED: 1-n licenses expired
 		STATUS: Yellow: 1-n licenses expiration date < alarm date limit
+		STATUS: BLACK: No connection, or auth gone wrong, or some REST API hassles
 		
 	
 	OUTPUT:
