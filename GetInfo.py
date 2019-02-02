@@ -18,6 +18,7 @@ from jira import JIRA
 import json
 import pprint
 from datetime import date
+import logging
 
 
 __version__ = "0.9"
@@ -31,6 +32,21 @@ def main(argv):
     JIRASUMMARY=""
     JIRADESCRIPTION=""
     
+    logger = logging.getLogger(thisFile)
+    logger.setLevel(logging.INFO)
+    
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+
+    # create formatter
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
     
     parser = argparse.ArgumentParser(usage="""
     {1}    Version:{0}     -  mika.nokka1@gmail.com
@@ -42,6 +58,8 @@ def main(argv):
     EXAMPLE: python {1}  -j http://jira.test.com 
     
     debugmode: -d ON
+    
+    Return values: 1=black, 2=red,3=yellow, 0=green, 5=tool issues
 
 
     """.format(__version__,sys.argv[0]))
@@ -56,8 +74,8 @@ def main(argv):
         
     
     if args.version:
-        print 'Tool version: %s'  % __version__
-        sys.exit(2)    
+        logger.info( 'Tool version: %s'  % __version__)
+        sys.exit(5)    
          
 
     JIRASERVICE = args.jira or ''
@@ -67,23 +85,24 @@ def main(argv):
     # quick old-school way to check needed parameters
     if (JIRASERVICE=='' ):
         parser.print_help()
-        sys.exit(2)
+        logger.error("Check used parameters")
+        sys.exit(5)
 
-    user, PASSWORD = Authenticate(JIRASERVICE,DEBUG)
-    jira= DoJIRAStuff(user,PASSWORD,JIRASERVICE)
+    user, PASSWORD = Authenticate(JIRASERVICE,DEBUG,logger)
+    jira= DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger)
     #CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION)
-    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG)    
+    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger)    
 ####################################################################################################    
-def Authenticate(JIRASERVICE,DEBUG):
+def Authenticate(JIRASERVICE,DEBUG,logger):
     host=JIRASERVICE
     credentials = netrc.netrc()
     auth = credentials.authenticators(host)
     if auth:
         user = auth[0]
         PASSWORD = auth[2]
-        print "Got .netrc OK"
+        logger.info("Got .netrc OK")
     else:
-        print "ERROR: .netrc file problem (Server:{0} . EXITING!".format(host)
+        logger.error(".netrc file problem (Server:{0}) . EXITING!".format(host))
         sys.exit(1)
 
     f = requests.get(host,auth=(user, PASSWORD))
@@ -93,33 +112,34 @@ def Authenticate(JIRASERVICE,DEBUG):
     HeaderCheck = re.search( r"(.*?)(AUTHENTICATION_DENIED|AUTHENTICATION_FAILED)", header)
     if HeaderCheck:
         CurrentGroups=HeaderCheck.groups()    
-        print ("Group 1: %s" % CurrentGroups[0]) 
-        print ("Group 2: %s" % CurrentGroups[1]) 
-        print ("Header: %s" % header)         
-        print "Authentication FAILED - HEADER: {0}".format(header) 
-        print "--> ERROR: Apparantly user authentication gone wrong. EXITING!"
+        logger.info("Group 1: %s" % CurrentGroups[0]) 
+        logger.info("Group 2: %s" % CurrentGroups[1]) 
+        logger.info("Header: %s" % header)         
+        logger.error("Authentication FAILED - HEADER: {0}".format(header)) 
+        logger.error("Apparantly user authentication gone wrong. EXITING!")
         sys.exit(1)
     else:
-        print "Authentication OK"
+        logger.info("Authentication OK")
         if (DEBUG):
-          print"HEADER: {0}".format(header)    
+            logger.info("HEADER: {0}".format(header))    
     print "---------------------------------------------------------"
     return user,PASSWORD
 
 ###################################################################################    
-def DoJIRAStuff(user,PASSWORD,JIRASERVICE):
+def DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger):
  jira_server=JIRASERVICE
  try:
      print("Connecting to JIRA: %s" % jira_server)
      jira_options = {'server': jira_server}
      jira = JIRA(options=jira_options,basic_auth=(user,PASSWORD))
-     print "JIRA Authorization OK"
+     logger.info("JIRA Authorization OK")
  except Exception,e:
-    print("Failed to connect to JIRA: %s" % e)
+    logger.error("Failed to connect to JIRA: %s" % e)
+    sys.exit(1)
  return jira   
     
 ####################################################################################
-def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION):
+def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION,logger):
     jiraobj=jira
     project=JIRAPROJECT
     print "Creating issue for JIRA project: {0}".format(project)
@@ -137,9 +157,9 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION):
         sys.exit(1)
 
 ####################################################################################
-def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG):
+def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
     
-    print "Debug:{0}".format(DEBUG)
+    logger.info( "Debug status:{0}".format(DEBUG))
     
     headers = {'Content-Type': 'application/json'}
     # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)  # server license info
@@ -148,23 +168,23 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG):
     r=requests.get(URL, headers,  auth=(user, PASSWORD))
  
     if (DEBUG):
-        print "Headers:{0}".format(r.headers)
-        print "VIESTI:{0}".format((r.text).encode('utf-8'))
+        logger.info("Headers:{0}".format(r.headers))
+        logger.info("Message:{0}".format((r.text).encode('utf-8')))
     
     if (r.status_code == requests.codes.ok):
-        print ("ok")
+        logger.info("ok reply")
         data = json.loads(r.text)
         if (DEBUG):
-            print "PLUGIN RAW DATA:{0}".format(data)
-            print "*********************"
-            print "SORTED DATA:"
-            print(json.dumps(data, indent=4, sort_keys=True))
+            logger.info( "PLUGIN RAW DATA:{0}".format(data))
+            logger.info("*********************")
+            logger.info("SORTED DATA:")
+            logger.info((json.dumps(data, indent=4, sort_keys=True)))
 
         sorted_data = sorted(data["plugins"], key=lambda k: k['name'])
         if (DEBUG):
-            print "PLUGIN NAME SORTED_DATA:"
-            print(json.dumps(sorted_data, indent=4, sort_keys=True))
-            pprint.pprint(data) # jsut tested pprint library
+            logger.info("PLUGIN NAME SORTED_DATA:")
+            logger.info((json.dumps(sorted_data, indent=4, sort_keys=True)))
+            #pprint.pprint(data) # jsut tested pprint library
         
         for item in sorted_data:
            
@@ -174,35 +194,38 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG):
                 URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey) # license info for one plugin (key)
                 r=requests.get(URL, headers,  auth=(user, PASSWORD))
                 if (DEBUG):
-                    print "Headers:{0}".format(r.headers)
-                    print "VIESTI:{0}".format((r.text).encode('utf-8'))
+                    logger.info("Headers:{0}".format(r.headers))
+                    logger.info("Message:{0}".format((r.text).encode('utf-8')))
                 
                 # TODO: SHOULD CHECK FAIL
                 licenseinfo = json.loads(r.text)
                 if (DEBUG):
-                    print(json.dumps(licenseinfo, indent=4, sort_keys=True))
+                    logger.info((json.dumps(licenseinfo, indent=4, sort_keys=True)))
                 
-                print "PLUGIN:{0:35s} VERSION:{1:10s} KEY:{2:40s}".format(item["name"],item["version"],pluginkey)
+                logger.info( "PLUGIN:{0:35s} VERSION:{1:10s} KEY:{2:40s}".format(item["name"],item["version"],pluginkey))
                 
                 if "maintenanceExpiryDate" in licenseinfo:
                     #ExpDate=licenseinfo["maintenanceExpiryDate"] # the mystical number string
                     ExpDate=licenseinfo["maintenanceExpiryDateString"]
-                    print "EXPIRATION DATE:{0}".format(ExpDate)
+                    logger.info( "EXPIRATION DATE:{0}".format(ExpDate))
                     Converdate = datetime.datetime.strptime(ExpDate, '%d/%b/%y')
                     #Twoweeks = datetime.datetime.now() - datetime.timedelta(weeks=2)
                     if (datetime.datetime.now() < Converdate):
                         Exprdelta=(Converdate - datetime.datetime.now()).days
-                        print "--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta)
+                        logger.info("--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta))
                     if(datetime.datetime.now() > Converdate):
-                        print "--> ERROR: LICENCE EXPIRED. ARGH"
+                        logger.error( "--> ERROR: LICENCE EXPIRED. ARGH")
+                        # TODO: INCLREASE FAILED LICENSES COUNTER
                         
                 else:
                     ExpDate="NONENONE" # dead code
                 print "------------------------------------------------------------------------------------------"
             
+        #TODO return either green,yellow or red 
             #print "-------------------------------------------------------------------------"
     else:
-        print ("FAIL")
+        logger.error("Failed to get license information")
+        sys.exit(1)
     
         
 if __name__ == "__main__":
