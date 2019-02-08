@@ -186,6 +186,9 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
             logger.info((json.dumps(sorted_data, indent=4, sort_keys=True)))
             #pprint.pprint(data) # jsut tested pprint library
         
+        EXPIRED={} #record issutypes
+        OKEXPIRATION={}
+        ALARMNEXPIRATION={}
         for item in sorted_data:
            
 
@@ -203,6 +206,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
                     logger.info((json.dumps(licenseinfo, indent=4, sort_keys=True)))
                 
                 logger.info( "PLUGIN:{0:35s} VERSION:{1:10s} KEY:{2:40s}".format(item["name"],item["version"],pluginkey))
+                pluginname=item["name"]
                 
                 if "maintenanceExpiryDate" in licenseinfo:
                     #ExpDate=licenseinfo["maintenanceExpiryDate"] # the mystical number string
@@ -213,9 +217,40 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
                     if (datetime.datetime.now() < Converdate):
                         Exprdelta=(Converdate - datetime.datetime.now()).days
                         logger.info("--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta))
+                        if (Exprdelta < 10  ):
+                            print "TRESHOLD EXP DATE"
+                            if (pluginname in ALARMNEXPIRATION):
+                                value=ALARMNEXPIRATION.get(pluginname,"10000") # 1000 is default value
+                                value=value+1 
+                                ALARMNEXPIRATION[pluginname]=value
+                                print "Addded FAILED threshold expr plugin enrty: {0}".format(pluginname)
+                            else:
+                                ALARMNEXPIRATION[pluginname]=1 # first issue attachment, create entry for dictionary
+                                print "Created FAILED threshold expr plugin entry: {0}".format(pluginname)
+                        else:
+                            print "OK VALIDITY" 
+                            if (pluginname in OKEXPIRATION):
+                                value=OKEXPIRATION.get(pluginname,"10000") # 1000 is default value
+                                value=value+1 
+                                OKEXPIRATION[pluginname]=value
+                                print "Addded OK threshold expr plugin enrty: {0}".format(pluginname)
+                            else:
+                                OKEXPIRATION[pluginname]=1 # first issue attachment, create entry for dictionary
+                                print "Created OK threshold expr plugin entry: {0}".format(pluginname)
+                            
+                        
                     if(datetime.datetime.now() > Converdate):
                         logger.error( "--> ERROR: LICENCE EXPIRED. ARGH")
-                        # TODO: INCLREASE FAILED LICENSES COUNTER
+                        #use dictionary to keep record of failed licenes
+                        if (pluginname in EXPIRED):
+                            value=EXPIRED.get(pluginname,"10000") # 1000 is default value
+                            value=value+1 
+                            EXPIRED[pluginname]=value
+                            print "Addded failed plugin: {0}".format(pluginname)
+                        else:
+                            EXPIRED[pluginname]=1 # first issue attachment, create entry for dictionary
+                            print "Created failed plugin entry: {0}".format(pluginname)
+                      
                         
                 else:
                     ExpDate="NONENONE" # dead code
@@ -223,9 +258,25 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
             
         #TODO return either green,yellow or red 
             #print "-------------------------------------------------------------------------"
+    
+    
+   
+    
     else:
         logger.error("Failed to get license information")
+        logger.info("Headers:{0}".format(r.headers))
+        logger.info("Message:{0}".format((r.text).encode('utf-8')))
         sys.exit(1)
+    
+    print "***********************************************************"
+    for key,value in OKEXPIRATION.items():
+        print "PLUGIN:{0}  => OK Expiration date in future {1}".format(key,value) 
+    print "***********************************************************"
+    for key,value in ALARMNEXPIRATION.items():
+        print "PLUGIN:{0}  => ALARM Expiration date too near{1}".format(key,value) 
+    print "***********************************************************"
+    for key,value in EXPIRED.items():
+        print "PLUGIN:{0}  => FAIL expired {1}".format(key,value)
     
         
 if __name__ == "__main__":
