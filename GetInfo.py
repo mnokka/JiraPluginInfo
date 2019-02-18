@@ -33,11 +33,11 @@ def main(argv):
     JIRADESCRIPTION=""
     
     logger = logging.getLogger(thisFile)
-    logger.setLevel(logging.INFO)
+    #logger.setLevel(logging.DEBUG) #info
     
     # create console handler and set level to debug
     ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
+    #ch.setLevel(logging.DEBUG)
 
     # create formatter
     formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(message)s')
@@ -81,6 +81,12 @@ def main(argv):
     JIRASERVICE = args.jira or ''
     DEBUG=args.debug or False 
   
+    if (DEBUG):
+        logger.setLevel(logging.DEBUG) #info
+        ch.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO) #info
+        ch.setLevel(logging.INFO) 
   
     # quick old-school way to check needed parameters
     if (JIRASERVICE=='' ):
@@ -142,7 +148,7 @@ def DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger):
 def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION,logger):
     jiraobj=jira
     project=JIRAPROJECT
-    print "Creating issue for JIRA project: {0}".format(project)
+    logger.info( "Creating issue for JIRA project: {0}".format(project))
     issue_dict = {
     'project': {'key': JIRAPROJECT},
     'summary': JIRASUMMARY,
@@ -153,7 +159,7 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION,logger):
     try:
         new_issue = jiraobj.create_issue(fields=issue_dict)
     except Exception,e:
-        print("Failed to create JIRA project, error: %s" % e)
+        logger.error(("Failed to create JIRA project, error: %s" % e))
         sys.exit(1)
 
 ####################################################################################
@@ -175,15 +181,15 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
         logger.info("ok reply")
         data = json.loads(r.text)
         if (DEBUG):
-            logger.info( "PLUGIN RAW DATA:{0}".format(data))
-            logger.info("*********************")
-            logger.info("SORTED DATA:")
-            logger.info((json.dumps(data, indent=4, sort_keys=True)))
+            logger.debug( "PLUGIN RAW DATA:{0}".format(data))
+            logger.debug("*********************")
+            logger.debug("SORTED DATA:")
+            logger.debug((json.dumps(data, indent=4, sort_keys=True)))
 
         sorted_data = sorted(data["plugins"], key=lambda k: k['name'])
         if (DEBUG):
-            logger.info("PLUGIN NAME SORTED_DATA:")
-            logger.info((json.dumps(sorted_data, indent=4, sort_keys=True)))
+            logger.debug("PLUGIN NAME SORTED_DATA:")
+            logger.debug((json.dumps(sorted_data, indent=4, sort_keys=True)))
             #pprint.pprint(data) # jsut tested pprint library
         
         EXPIRED={} #record issutypes
@@ -197,13 +203,13 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
                 URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey) # license info for one plugin (key)
                 r=requests.get(URL, headers,  auth=(user, PASSWORD))
                 if (DEBUG):
-                    logger.info("Headers:{0}".format(r.headers))
-                    logger.info("Message:{0}".format((r.text).encode('utf-8')))
+                    logger.debug("Headers:{0}".format(r.headers))
+                    logger.debug("Message:{0}".format((r.text).encode('utf-8')))
                 
                 # TODO: SHOULD CHECK FAIL
                 licenseinfo = json.loads(r.text)
                 if (DEBUG):
-                    logger.info((json.dumps(licenseinfo, indent=4, sort_keys=True)))
+                    logger.debug((json.dumps(licenseinfo, indent=4, sort_keys=True)))
                 
                 logger.info( "PLUGIN:{0:35s} VERSION:{1:10s} KEY:{2:40s}".format(item["name"],item["version"],pluginkey))
                 pluginname=item["name"]
@@ -217,26 +223,26 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
                     if (datetime.datetime.now() < Converdate):
                         Exprdelta=(Converdate - datetime.datetime.now()).days
                         logger.info("--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta))
-                        if (Exprdelta < 10  ):
-                            print "TRESHOLD EXP DATE"
+                        if (Exprdelta < 20 ):
+                            logger.debug( "TRESHOLD EXP DATE")
                             if (pluginname in ALARMNEXPIRATION):
                                 value=ALARMNEXPIRATION.get(pluginname,"10000") # 1000 is default value
                                 value=value+1 
                                 ALARMNEXPIRATION[pluginname]=value
-                                print "Addded FAILED threshold expr plugin enrty: {0}".format(pluginname)
+                                logger.debug( "Addded FAILED threshold expr plugin enrty: {0}".format(pluginname))
                             else:
                                 ALARMNEXPIRATION[pluginname]=1 # first issue attachment, create entry for dictionary
-                                print "Created FAILED threshold expr plugin entry: {0}".format(pluginname)
+                                logger.debug("Created FAILED threshold expr plugin entry: {0}".format(pluginname))
                         else:
-                            print "OK VALIDITY" 
+                            logger.debug( "OK VALIDITY")
                             if (pluginname in OKEXPIRATION):
                                 value=OKEXPIRATION.get(pluginname,"10000") # 1000 is default value
                                 value=value+1 
                                 OKEXPIRATION[pluginname]=value
-                                print "Addded OK threshold expr plugin enrty: {0}".format(pluginname)
+                                logger.debug("Addded OK threshold expr plugin enrty: {0}".format(pluginname))
                             else:
                                 OKEXPIRATION[pluginname]=1 # first issue attachment, create entry for dictionary
-                                print "Created OK threshold expr plugin entry: {0}".format(pluginname)
+                                logger.debug("Created OK threshold expr plugin entry: {0}".format(pluginname))
                             
                         
                     if(datetime.datetime.now() > Converdate):
@@ -246,15 +252,15 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
                             value=EXPIRED.get(pluginname,"10000") # 1000 is default value
                             value=value+1 
                             EXPIRED[pluginname]=value
-                            print "Addded failed plugin: {0}".format(pluginname)
+                            logger.debug( "Addded failed plugin: {0}".format(pluginname))
                         else:
                             EXPIRED[pluginname]=1 # first issue attachment, create entry for dictionary
-                            print "Created failed plugin entry: {0}".format(pluginname)
+                            logger.debug ( "Created failed plugin entry: {0}".format(pluginname))
                       
                         
                 else:
                     ExpDate="NONENONE" # dead code
-                print "------------------------------------------------------------------------------------------"
+                logger.info( "----------------------------------------------------------------------------------------------------")
             
         #TODO return either green,yellow or red 
             #print "-------------------------------------------------------------------------"
@@ -268,15 +274,16 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
         logger.info("Message:{0}".format((r.text).encode('utf-8')))
         sys.exit(1)
     
-    print "***********************************************************"
+    #value is 1 for each plugin, dictionary used for convience
+    logger.info( "***********************************************************")
     for key,value in OKEXPIRATION.items():
-        print "PLUGIN:{0}  => OK Expiration date in future {1}".format(key,value) 
-    print "***********************************************************"
+        logger.debug( "PLUGIN:{0}  => OK Expiration date in future".format(key) )
+    logger.info( "***********************************************************")
     for key,value in ALARMNEXPIRATION.items():
-        print "PLUGIN:{0}  => ALARM Expiration date too near{1}".format(key,value) 
-    print "***********************************************************"
+        logger.debug("PLUGIN:{0}  => ALARM Expiration date is coming soon".format(key) )
+    logger.info( "***********************************************************")
     for key,value in EXPIRED.items():
-        print "PLUGIN:{0}  => FAIL expired {1}".format(key,value)
+        logger.debug( "PLUGIN:{0}  => FAIL License expired".format(key))
     
         
 if __name__ == "__main__":
