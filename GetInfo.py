@@ -58,6 +58,7 @@ def main(argv):
     EXAMPLE: python {1}  -j http://jira.test.com 
     
     debugmode: -d ON
+    developer debug mode: -l ON
     
     Set days limit before alarming -t 20
     (marks all license expr days in next 20 days as failed)
@@ -71,6 +72,7 @@ def main(argv):
     #parser.add_argument('-p','--project', help='<JIRA project key>')
     parser.add_argument('-j','--jira', help='<Target JIRA address>')
     parser.add_argument('-d','--debug', help='<Debug Mode>')
+    parser.add_argument('-l','--development', help='<Development debug mode>')
     parser.add_argument('-v','--version', help='<Version>', action='store_true')
     parser.add_argument('-t','--threshold', help='<Expr days threshold limit>')
   
@@ -86,7 +88,7 @@ def main(argv):
     JIRASERVICE = args.jira or ''
     DEBUG=args.debug or False 
     THRDAYS=args.threshold or 30
-
+    DEVDEBUG=args.development or False 
   
   
     if (DEBUG):
@@ -107,7 +109,7 @@ def main(argv):
     user, PASSWORD = Authenticate(JIRASERVICE,DEBUG,logger)
     jira= DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger)
     #CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION)
-    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS)    
+    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG)    
 ####################################################################################################    
 def Authenticate(JIRASERVICE,DEBUG,logger):
     host=JIRASERVICE
@@ -173,7 +175,7 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION,logger):
         sys.exit(1)
 
 ####################################################################################
-def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS):
+def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     
     logger.info( "Debug status:{0}".format(DEBUG))
     
