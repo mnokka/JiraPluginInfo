@@ -59,6 +59,10 @@ def main(argv):
     
     debugmode: -d ON
     
+    Set days limit before alarming -t 20
+    (marks all license expr days in next 20 days as failed)
+    Default value is 30days
+    
     Return values: 1=black, 2=red,3=yellow, 0=green, 5=tool issues
 
 
@@ -68,6 +72,7 @@ def main(argv):
     parser.add_argument('-j','--jira', help='<Target JIRA address>')
     parser.add_argument('-d','--debug', help='<Debug Mode>')
     parser.add_argument('-v','--version', help='<Version>', action='store_true')
+    parser.add_argument('-t','--threshold', help='<Expr days threshold limit>')
   
     
     args = parser.parse_args()
@@ -80,6 +85,9 @@ def main(argv):
 
     JIRASERVICE = args.jira or ''
     DEBUG=args.debug or False 
+    THRDAYS=args.threshold or 30
+
+  
   
     if (DEBUG):
         logger.setLevel(logging.DEBUG) #info
@@ -94,10 +102,12 @@ def main(argv):
         logger.error("Check used parameters")
         sys.exit(5)
 
+    logger.info("Using failure threshold:{0} days".format(THRDAYS))
+    
     user, PASSWORD = Authenticate(JIRASERVICE,DEBUG,logger)
     jira= DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger)
     #CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION)
-    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger)    
+    GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS)    
 ####################################################################################################    
 def Authenticate(JIRASERVICE,DEBUG,logger):
     host=JIRASERVICE
@@ -163,7 +173,7 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION,logger):
         sys.exit(1)
 
 ####################################################################################
-def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
+def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS):
     
     logger.info( "Debug status:{0}".format(DEBUG))
     
@@ -223,7 +233,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger):
                     if (datetime.datetime.now() < Converdate):
                         Exprdelta=(Converdate - datetime.datetime.now()).days
                         logger.info("--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta))
-                        if (Exprdelta < 20 ):
+                        if (Exprdelta < THRDAYS ):
                             logger.debug( "TRESHOLD EXP DATE")
                             if (pluginname in ALARMNEXPIRATION):
                                 value=ALARMNEXPIRATION.get(pluginname,"10000") # 1000 is default value
