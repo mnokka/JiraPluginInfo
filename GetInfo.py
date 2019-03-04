@@ -91,7 +91,7 @@ def main(argv):
     DEVDEBUG=args.development or False 
   
   
-    if (DEBUG):
+    if (DEBUG or DEVDEBUG):
         logger.setLevel(logging.DEBUG) #info
         ch.setLevel(logging.DEBUG)
     else:
@@ -192,14 +192,14 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     if (r.status_code == requests.codes.ok):
         logger.info("ok reply")
         data = json.loads(r.text)
-        if (DEBUG):
+        if (DEVDEBUG):
             logger.debug( "PLUGIN RAW DATA:{0}".format(data))
             logger.debug("*********************")
             logger.debug("SORTED DATA:")
             logger.debug((json.dumps(data, indent=4, sort_keys=True)))
 
         sorted_data = sorted(data["plugins"], key=lambda k: k['name'])
-        if (DEBUG):
+        if (DEVDEBUG):
             logger.debug("PLUGIN NAME SORTED_DATA:")
             logger.debug((json.dumps(sorted_data, indent=4, sort_keys=True)))
             #pprint.pprint(data) # jsut tested pprint library
@@ -220,7 +220,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
                 
                 # TODO: SHOULD CHECK FAIL
                 licenseinfo = json.loads(r.text)
-                if (DEBUG):
+                if (DEVDEBUG):
                     logger.debug((json.dumps(licenseinfo, indent=4, sort_keys=True)))
                 
                 logger.info( "PLUGIN:{0:35s} VERSION:{1:10s} KEY:{2:40s}".format(item["name"],item["version"],pluginkey))
@@ -286,17 +286,39 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
         logger.info("Message:{0}".format((r.text).encode('utf-8')))
         sys.exit(1)
     
+    OKEXPR=0
+    ALARMEXPR=0
+    FAILEDEXPR=0
+    
     #value is 1 for each plugin, dictionary used for convience
-    logger.info( "***********************************************************")
+    logger.debug( "***********************************************************")
     for key,value in OKEXPIRATION.items():
         logger.debug( "PLUGIN:{0}  => OK Expiration date in future".format(key) )
-    logger.info( "***********************************************************")
+        OKEXPR=OKEXPR+1
+        
+    logger.debug( "***********************************************************")
     for key,value in ALARMNEXPIRATION.items():
         logger.debug("PLUGIN:{0}  => ALARM Expiration date is coming soon".format(key) )
-    logger.info( "***********************************************************")
+        ALARMEXPR=ALARMEXPR+1
+        
+    logger.debug( "***********************************************************")
     for key,value in EXPIRED.items():
         logger.debug( "PLUGIN:{0}  => FAIL License expired".format(key))
+        FAILEDEXPR=FAILEDEXPR+1
+        
     
+    #print the traffic lights summary 
+    logger.info("")
+    logger.info( "***** STATUS SUMMARY FOR:{0} **************".format(JIRASERVICE))
+    logger.info( "Plugins with OK Expiration date in future:{0}".format(OKEXPR) )
+    logger.info( "Plugins with ALARM Expiration:{0} ".format(ALARMEXPR) )
+    logger.info( "Plugins with FAILED Expiration:{0} ".format(FAILEDEXPR) )
+    if (FAILEDEXPR >0):
+        logger.info("==> STATUS: RED")
+    if (ALARMEXPR >0 and FAILEDEXPR==0):   
+        logger.info("==> STATUS: YELLOW")
+    if (ALARMEXPR==0 and FAILEDEXPR==0):   
+        logger.info("==> STATUS: GREEN")   
         
 if __name__ == "__main__":
         main(sys.argv[1:])
