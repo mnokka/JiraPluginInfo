@@ -233,7 +233,26 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
                     #ExpDate=licenseinfo["maintenanceExpiryDate"] # the mystical number string
                     ExpDate=licenseinfo["maintenanceExpiryDateString"]
                     logger.info( "EXPIRATION DATE:{0}".format(ExpDate))
-                    Converdate = datetime.datetime.strptime(ExpDate, '%d/%b/%y')
+                    
+                    #first trial to hadnle multiple timeformats
+                    #TODO use loop to go through all time format instead of nested 
+                    try:
+                        Converdate = datetime.datetime.strptime(ExpDate, '%d/%b/%y')
+                        #Converdate = datetime.datetime.strptime(ExpDate, '%x')
+                    except Exception as e:
+                        #logger.error("Date convert error")
+                        #logger.error("Error: {0}".format(e))
+                        try:
+                            Converdate = datetime.datetime.strptime(ExpDate, '%d.%m.%Y')
+                        except Exception as e:
+                            logger.error("Date convert error")
+                            #logger.error("Error: {0}".format(e))
+                        
+                    
+                    
+                  
+                    
+                    
                     #Twoweeks = datetime.datetime.now() - datetime.timedelta(weeks=2)
                     if (datetime.datetime.now() < Converdate):
                         Exprdelta=(Converdate - datetime.datetime.now()).days
