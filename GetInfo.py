@@ -190,7 +190,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     
     headers = {'Content-Type': 'application/json'}
     # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)  # server license info
-    URL="{0}/rest/plugsys.exit(1)ins/1.0/".format(JIRASERVICE) # get plugins
+    URL="{0}/rest/plugins/1.0/".format(JIRASERVICE) # get plugins # get plugins
     #URL="{0}/rest/api/2/".format(JIRASERVICE)
     r=requests.get(URL, headers,  auth=(user, PASSWORD))
  
@@ -315,7 +315,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
         logger.error("Failed to get license information")
         logger.info("Headers:{0}".format(r.headers))
         logger.info("Message:{0}".format((r.text).encode('utf-8')))
-        sys.exit(1)
+        sys.exit(300)
     
     OKEXPR=0
     ALARMEXPR=0
