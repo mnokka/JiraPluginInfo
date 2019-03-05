@@ -5,201 +5,30 @@ Connecting to JIRA: https://<server-name>
 JIRA Authorization OK
 Debug:False
 ok
-PLUGIN:Actions for JIRA Service Desk       VERSION:1.3.28     KEY:com.intenso.jira.plugins.actions.jsd-actions
-EXPIRATION DATE:05/Oct/16
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Adaptavist ScriptRunner for JIRA    VERSION:5.4.40     KEY:com.onresolve.jira.groovy.groovyrunner  
-EXPIRATION DATE:27/Feb/19
---> LICENCE IS VALID ---> TO BE EXPIRED IN:29 DAYS
-------------------------------------------------------------------------------------------
-PLUGIN:Arsenale Dataplane                  VERSION:2.3.7      KEY:com.arsenalesystems.dataplane           
-EXPIRATION DATE:26/Feb/19
---> LICENCE IS VALID ---> TO BE EXPIRED IN:28 DAYS
-------------------------------------------------------------------------------------------
-PLUGIN:Automated Release Notes             VERSION:2.1.2      KEY:amoeboids.releasenotes                  
-EXPIRATION DATE:23/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Automation for Jira                 VERSION:3.13.3     KEY:com.codebarrel.addons.automation        
-EXPIRATION DATE:15/Jul/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Backbone Issue Sync for Jira        VERSION:3.7.0      KEY:com.k15t.backbone.backbone-issue-sync   
-EXPIRATION DATE:09/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:BigPicture                          VERSION:7.0.0-jira7 KEY:eu.softwareplant.bigpicture             
-EXPIRATION DATE:23/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Bob Swift Atlassian Add-ons - Create on Transition VERSION:6.1.0      KEY:org.swift.jira.cot                      
-EXPIRATION DATE:09/Jan/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Configuration Manager for JIRA      VERSION:6.0.2      KEY:com.botronsoft.jira.configurationmanager
-EXPIRATION DATE:03/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Dynamic Forms for Jira              VERSION:3.1.0      KEY:com.intenso.jira.plugin.dynamic-forms   
-EXPIRATION DATE:01/Sep/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Easy Agile Programs for JIRA        VERSION:1.2.1      KEY:com.easyagile.programs                  
-EXPIRATION DATE:18/Dec/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Email This Issue                    VERSION:7.1.1.7    KEY:com.metainf.jira.plugin.emailissue      
-EXPIRATION DATE:02/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Exocet                              VERSION:2.10.1     KEY:com.valiantys.jira.plugins.exocet.jira-plugin-exocet-pro
-EXPIRATION DATE:05/Oct/16
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Extension for Jira Service Desk     VERSION:6.3.0      KEY:com.intenso.jira.plugins.jsd-extender   
-EXPIRATION DATE:17/Feb/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Filters Activity Stream Plugin      VERSION:3.3.0      KEY:com.ugubi.streams.filtersactivitystream 
-EXPIRATION DATE:24/Dec/16
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:ImpEx                               VERSION:1.2.2      KEY:com.moresimp.impex                      
-EXPIRATION DATE:26/Feb/19
---> LICENCE IS VALID ---> TO BE EXPIRED IN:28 DAYS
-------------------------------------------------------------------------------------------
-PLUGIN:Insight                             VERSION:6.0.0      KEY:com.riadalabs.jira.plugins.insight      
-EXPIRATION DATE:02/Feb/19
---> LICENCE IS VALID ---> TO BE EXPIRED IN:4 DAYS
-------------------------------------------------------------------------------------------
-PLUGIN:Issue Templates for JIRA (Gold Edition) VERSION:7.2.2      KEY:com.intenso.jira.issue-templates        
-EXPIRATION DATE:20/Apr/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:IssueSYNC                           VERSION:1.6.1      KEY:com.intenso.jira.plugins.synchronizer   
-EXPIRATION DATE:21/Sep/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:JSU - Jira Suite Utilities          VERSION:2.6.0      KEY:com.googlecode.jira-suite-utilities     
-EXPIRATION DATE:09/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Jira Comment Toolbox                VERSION:2.9.0      KEY:com.kostebekteknoloji.plugins.jira.jira-comment-toolbox
-EXPIRATION DATE:10/Feb/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Jira Misc Workflow Extensions       VERSION:5.0.6      KEY:com.innovalog.jmwe.jira-misc-workflow-extensions
-EXPIRATION DATE:03/May/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Mail.Ru Calendar                    VERSION:3.4.3      KEY:ru.mail.jira.plugins.mailrucal          
-EXPIRATION DATE:22/Nov/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Mobility for JIRA                   VERSION:2.5-j7     KEY:net.luethi.plugins.jira.apn4jiraconnect 
-EXPIRATION DATE:11/Nov/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Multi-Level Cascading Select        VERSION:4.0.6      KEY:com.sourcesense.jira.plugin.cascadingselect
-EXPIRATION DATE:14/Mar/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:OpenID Authentication for JIRA      VERSION:3.1.3      KEY:com.pawelniewiadomski.jira.jira-openid-authentication-plugin
-EXPIRATION DATE:26/May/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Pivot Report                        VERSION:1.4.20     KEY:biz.epicreport.epicreports              
-EXPIRATION DATE:20/Sep/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Portfolio for Jira                  VERSION:2.15.0     KEY:com.radiantminds.roadmaps-jira          
-EXPIRATION DATE:26/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:ProForma: Forms and Templates for JIRA VERSION:1.2.2      KEY:com.thinktilt.proforma.add-on           
-EXPIRATION DATE:18/Dec/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Project Configurator                VERSION:2.2.0-beta-02-J7 KEY:com.awnaba.projectconfigurator.projectconfigurator
-EXPIRATION DATE:05/Oct/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:RefinedTheme for JIRA Service Desk  VERSION:2.0.1      KEY:com.refinedwiki.jira.servicedesk.refinedtheme
-EXPIRATION DATE:10/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Risk Management for Jira            VERSION:6.7.0      KEY:com.ja.jira.plugin.report.riskmanagement
-EXPIRATION DATE:20/Dec/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Risk Manager by SoftComply          VERSION:1.4.6      KEY:com-softcomply-riskmanager-cloud        
-EXPIRATION DATE:20/Dec/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Secure Login for JIRA               VERSION:2.2.2.3    KEY:de.syracom.jira.plugins.securelogin     
-------------------------------------------------------------------------------------------
-PLUGIN:Shared Ownership for Dashboards/Filters VERSION:1.0.1      KEY:com.qotilabs.jira.shared-ownership-for-dashboards-and-filters
-EXPIRATION DATE:03/May/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Structure                           VERSION:5.1.0      KEY:com.almworks.jira.structure             
-EXPIRATION DATE:21/Dec/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Structure.Pages                     VERSION:1.3.0      KEY:com.almworks.structure.pages            
-EXPIRATION DATE:11/Jun/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Teams for JIRA Service Desk         VERSION:2.2.0      KEY:eu.prepend.jira.servicedesk-teams       
-EXPIRATION DATE:15/Aug/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Tempo Budgets                       VERSION:11.13.0    KEY:com.greffon.folio                       
-EXPIRATION DATE:23/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Tempo Planner                       VERSION:5.2.0      KEY:com.tempoplugin.tempo-planner           
-EXPIRATION DATE:23/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Tempo Timesheets                    VERSION:8.14.0     KEY:is.origo.jira.tempo-plugin              
-EXPIRATION DATE:23/Oct/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Timesheet Reports and Gadgets       VERSION:3.1.1      KEY:jira-timesheet-plugin                   
-EXPIRATION DATE:15/Jul/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Translation for JIRA Service Desk   VERSION:2.2.14     KEY:com.intenso.jira.plugins.translation.jsd-translation
-EXPIRATION DATE:17/Feb/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:User Deactivator for JIRA           VERSION:2.0.4      KEY:com.riadalabs.jira.plugins.userdeactivator
-EXPIRATION DATE:15/Feb/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:User Profiles for JIRA              VERSION:1.0.2      KEY:de.communardo.jira.plugins.userprofile  
-EXPIRATION DATE:14/Oct/16
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Xray                                VERSION:3.2.2      KEY:com.xpandit.plugins.xray                
-EXPIRATION DATE:20/Dec/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:ZAPI                                VERSION:2.6.0.26003660 KEY:com.thed.zephyr.zapi                    
-EXPIRATION DATE:31/Jan/18
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
-PLUGIN:Zephyr for JIRA                     VERSION:4.0.2.40207614 KEY:com.thed.zephyr.je                      
-EXPIRATION DATE:28/Nov/20
---> LICENCE IS VALID ---> TO BE EXPIRED IN:669 DAYS
-------------------------------------------------------------------------------------------
-PLUGIN:eazyBI Reports and Charts for Jira  VERSION:4.7.1      KEY:com.eazybi.jira.plugins.eazybi-jira     
-EXPIRATION DATE:26/Feb/19
---> LICENCE IS VALID ---> TO BE EXPIRED IN:28 DAYS
-------------------------------------------------------------------------------------------
-PLUGIN:zephyr-report                       VERSION:2.0        KEY:com.kostebekteknoloji.plugins.jira.zephyr-report
-EXPIRATION DATE:11/Oct/17
---> ERROR: LICENCE EXPIRED. ARGH
-------------------------------------------------------------------------------------------
+2019-03-05 08:05:37,813:GetInfo.py:INFO:----------------------------------------------------------------------------------------------------
+2019-03-05 08:05:38,021:GetInfo.py:INFO:PLUGIN:Xray                                VERSION:3.2.2      KEY:com.xpandit.plugins.xray                
+2019-03-05 08:05:38,022:GetInfo.py:INFO:EXPIRATION DATE:20/Dec/18
+2019-03-05 08:05:38,022:GetInfo.py:ERROR:--> ERROR: LICENCE EXPIRED. ARGH
+2019-03-05 08:05:38,022:GetInfo.py:INFO:----------------------------------------------------------------------------------------------------
+2019-03-05 08:05:38,232:GetInfo.py:INFO:PLUGIN:ZAPI                                VERSION:2.6.0.26003660 KEY:com.thed.zephyr.zapi                    
+2019-03-05 08:05:38,232:GetInfo.py:INFO:EXPIRATION DATE:31/Jan/18
+2019-03-05 08:05:38,232:GetInfo.py:ERROR:--> ERROR: LICENCE EXPIRED. ARGH
+2019-03-05 08:05:38,232:GetInfo.py:INFO:----------------------------------------------------------------------------------------------------
+2019-03-05 08:05:38,458:GetInfo.py:INFO:PLUGIN:Zephyr for JIRA                     VERSION:4.0.2.40207614 KEY:com.thed.zephyr.je                      
+2019-03-05 08:05:38,458:GetInfo.py:INFO:EXPIRATION DATE:28/Nov/20
+2019-03-05 08:05:38,459:GetInfo.py:INFO:--> LICENCE IS VALID ---> TO BE EXPIRED IN:633 DAYS
+2019-03-05 08:05:38,459:GetInfo.py:INFO:----------------------------------------------------------------------------------------------------
+2019-03-05 08:05:38,665:GetInfo.py:INFO:PLUGIN:eazyBI Reports and Charts for Jira  VERSION:4.7.1      KEY:com.eazybi.jira.plugins.eazybi-jira     
+2019-03-05 08:05:38,665:GetInfo.py:INFO:EXPIRATION DATE:02/Apr/19
+2019-03-05 08:05:38,665:GetInfo.py:INFO:--> LICENCE IS VALID ---> TO BE EXPIRED IN:27 DAYS
+2019-03-05 08:05:38,665:GetInfo.py:INFO:----------------------------------------------------------------------------------------------------
+2019-03-05 08:05:38,879:GetInfo.py:INFO:PLUGIN:zephyr-report                       VERSION:2.0        KEY:com.kostebekteknoloji.plugins.jira.zephyr-report
+2019-03-05 08:05:38,879:GetInfo.py:INFO:EXPIRATION DATE:11/Oct/17
+2019-03-05 08:05:38,879:GetInfo.py:ERROR:--> ERROR: LICENCE EXPIRED. ARGH
+2019-03-05 08:05:38,879:GetInfo.py:INFO:----------------------------------------------------------------------------------------------------
+2019-03-05 08:05:38,880:GetInfo.py:INFO:
+2019-03-05 08:05:38,880:GetInfo.py:INFO:***** STATUS SUMMARY FOR:https://<server-name> **************
+2019-03-05 08:05:38,880:GetInfo.py:INFO:Plugins with OK Expiration date in future:1
+2019-03-05 08:05:38,880:GetInfo.py:INFO:Plugins with ALARM Expiration:2 
+2019-03-05 08:05:38,880:GetInfo.py:INFO:Plugins with FAILED Expiration:46 
+2019-03-05 08:05:38,880:GetInfo.py:INFO:==> STATUS: RED
