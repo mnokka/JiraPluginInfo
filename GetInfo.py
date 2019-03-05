@@ -78,25 +78,28 @@ def main(argv):
   
     
     args = parser.parse_args()
-        
     
-    if args.version:
-        logger.info( 'Tool version: %s'  % __version__)
-        sys.exit(5)    
-         
-
     JIRASERVICE = args.jira or ''
     DEBUG=args.debug or False 
     THRDAYS=args.threshold or 30
     DEVDEBUG=args.development or False 
   
-  
+        
     if (DEBUG or DEVDEBUG):
         logger.setLevel(logging.DEBUG) #info
         ch.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO) #info
         ch.setLevel(logging.INFO) 
+    
+    if args.version:
+        logger.info( 'Tool version: %s'  % __version__)
+        sys.exit(5)    
+         
+
+    
+  
+    
   
     # quick old-school way to check needed parameters
     if (JIRASERVICE=='' ):
@@ -235,7 +238,10 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
                     if (datetime.datetime.now() < Converdate):
                         Exprdelta=(Converdate - datetime.datetime.now()).days
                         logger.info("--> LICENCE IS VALID ---> TO BE EXPIRED IN:{0} DAYS".format(Exprdelta))
-                        if (Exprdelta < THRDAYS ):
+                        #logger.info("--> THRDAYS:{0} DAYS".format(THRDAYS))
+                        #calc=int(Exprdelta)-int(THRDAYS)
+                        #logger.info("--> calc:{0} DAYS".format(calc))
+                        if (int(Exprdelta) < int(THRDAYS) ): #in some date format -> convert int
                             logger.debug( "TRESHOLD EXP DATE")
                             if (pluginname in ALARMNEXPIRATION):
                                 value=ALARMNEXPIRATION.get(pluginname,"10000") # 1000 is default value
@@ -315,10 +321,12 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     logger.info( "Plugins with FAILED Expiration:{0} ".format(FAILEDEXPR) )
     if (FAILEDEXPR >0):
         logger.info("==> STATUS: RED")
-    if (ALARMEXPR >0 and FAILEDEXPR==0):   
+    elif (ALARMEXPR >0 and FAILEDEXPR==0):   
         logger.info("==> STATUS: YELLOW")
-    if (ALARMEXPR==0 and FAILEDEXPR==0):   
+    elif (ALARMEXPR==0 and FAILEDEXPR==0 and OKEXPR >0 ):   
         logger.info("==> STATUS: GREEN")   
+    else:
+        logger.info("==> STATUS: SYNTAX ERROR? NO IDEA WHAATSUP!!")
         
 if __name__ == "__main__":
         main(sys.argv[1:])
