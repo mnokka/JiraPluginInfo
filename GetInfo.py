@@ -64,7 +64,7 @@ def main(argv):
     (marks all license expr days in next 20 days as failed)
     Default value is 30days
     
-    Return values: 1=black, 2=red,3=yellow, 0=green, 5=tool issues
+    Return values: 300=black, 301=red,302=yellow, 303=green, 304=tool/auth issues
 
 
     """.format(__version__,sys.argv[0]))
@@ -94,7 +94,7 @@ def main(argv):
     
     if args.version:
         logger.info( 'Tool version: %s'  % __version__)
-        sys.exit(5)    
+        sys.exit(304)    
          
 
     
