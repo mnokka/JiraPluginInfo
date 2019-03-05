@@ -29,7 +29,7 @@ password mypassword
 
 **Usage**
 
-```python
+```
   python GetInfo.py -j https://jira.mycompany.com   (default 30days expr limit)
   python GetInfo.py -j https://jira.mycompany.com  -t 50 (marks all license expr days in next 50 days as an alarm))
   
@@ -50,9 +50,9 @@ password mypassword
 2019-03-05 08:05:38,880:GetInfo.py:INFO:Plugins with ALARM Expiration:2 
 2019-03-05 08:05:38,880:GetInfo.py:INFO:Plugins with FAILED Expiration:46 
 2019-03-05 08:05:38,880:GetInfo.py:INFO:==> STATUS: RED
+```  
   
-  
-```
+
 
 **Author**
 mika.nokka1@gmail.com
