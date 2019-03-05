@@ -55,7 +55,8 @@ def main(argv):
     Gets info for installed plugins in Jira
     
     
-    EXAMPLE: python {1}  -j http://jira.test.com 
+    EXAMPLE: python {1}  -j http://jira.test.com -t 50
+    "Find plugin expr dates, use 50 days expr limit for yellow alert"
     
     debugmode: -d ON
     developer debug mode: -l ON
@@ -64,7 +65,12 @@ def main(argv):
     (marks all license expr days in next 20 days as failed)
     Default value is 30days
     
-    Return values: 300=black, 301=red,302=yellow, 303=green, 304=tool/auth issues
+    Return values: 
+    300=black (auth or connection issues, no RESTAPI connection made)
+    301=red (expired plugins)
+    302=yellow (plugins to be expired inside given days limit found)
+    303=green (all plugins with valid licenses)
+    304= (tool/auth issues)
 
 
     """.format(__version__,sys.argv[0]))
@@ -105,7 +111,7 @@ def main(argv):
     if (JIRASERVICE=='' ):
         parser.print_help()
         logger.error("Check used parameters")
-        sys.exit(5)
+        sys.exit(304)
 
     logger.info("Using failure threshold:{0} days".format(THRDAYS))
     
@@ -124,7 +130,7 @@ def Authenticate(JIRASERVICE,DEBUG,logger):
         logger.info("Got .netrc OK")
     else:
         logger.error(".netrc file problem (Server:{0}) . EXITING!".format(host))
-        sys.exit(1)
+        sys.exit(300)
 
     f = requests.get(host,auth=(user, PASSWORD))
          
@@ -138,7 +144,7 @@ def Authenticate(JIRASERVICE,DEBUG,logger):
         logger.info("Header: %s" % header)         
         logger.error("Authentication FAILED - HEADER: {0}".format(header)) 
         logger.error("Apparantly user authentication gone wrong. EXITING!")
-        sys.exit(1)
+        sys.exit(300)
     else:
         logger.info("Authentication OK")
         if (DEBUG):
@@ -156,7 +162,7 @@ def DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger):
      logger.info("JIRA Authorization OK")
  except Exception,e:
     logger.error("Failed to connect to JIRA: %s" % e)
-    sys.exit(1)
+    sys.exit(304)
  return jira   
     
 ####################################################################################
@@ -184,7 +190,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     
     headers = {'Content-Type': 'application/json'}
     # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)  # server license info
-    URL="{0}/rest/plugins/1.0/".format(JIRASERVICE) # get plugins
+    URL="{0}/rest/plugsys.exit(1)ins/1.0/".format(JIRASERVICE) # get plugins
     #URL="{0}/rest/api/2/".format(JIRASERVICE)
     r=requests.get(URL, headers,  auth=(user, PASSWORD))
  
@@ -338,14 +344,19 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     logger.info( "Plugins with OK Expiration date in future:{0}".format(OKEXPR) )
     logger.info( "Plugins with ALARM Expiration:{0} ".format(ALARMEXPR) )
     logger.info( "Plugins with FAILED Expiration:{0} ".format(FAILEDEXPR) )
+    #    Return values: 300=black, 301=red,302=yellow, 303=green, 304=tool/auth issues
     if (FAILEDEXPR >0):
         logger.info("==> STATUS: RED")
+        sys.exit(301)
     elif (ALARMEXPR >0 and FAILEDEXPR==0):   
         logger.info("==> STATUS: YELLOW")
+        sys.exit(302)
     elif (ALARMEXPR==0 and FAILEDEXPR==0 and OKEXPR >0 ):   
         logger.info("==> STATUS: GREEN")   
+        sys.exit(303)
     else:
-        logger.info("==> STATUS: SYNTAX ERROR? NO IDEA WHAATSUP!!")
+        logger.info("==> STATUS: BLACK")
+        sys.exit(300)
         
 if __name__ == "__main__":
         main(sys.argv[1:])
