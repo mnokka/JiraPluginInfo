@@ -14,12 +14,12 @@ from requests.auth import HTTPBasicAuth
 import requests
 requests.packages.urllib3.disable_warnings()
 import itertools, re, sys
-from jira import JIRA
+from jira import JIRA, JIRAError
 import json
 import pprint
 from datetime import date
 import logging
-
+import certifi
 
 __version__ = "0.9"
 thisFile = __file__
@@ -132,7 +132,7 @@ def Authenticate(JIRASERVICE,DEBUG,logger):
         logger.error(".netrc file problem (Server:{0}) . EXITING!".format(host))
         sys.exit(300)
 
-    f = requests.get(host,auth=(user, PASSWORD))
+    f = requests.get(host,auth=(user, PASSWORD), verify=False)
          
     # CHECK WRONG AUTHENTICATION    
     header=str(f.headers)
@@ -149,7 +149,7 @@ def Authenticate(JIRASERVICE,DEBUG,logger):
         logger.info("Authentication OK")
         if (DEBUG):
             logger.info("HEADER: {0}".format(header))    
-    print "---------------------------------------------------------"
+    print ("---------------------------------------------------------")
     return user,PASSWORD
 
 ###################################################################################    
@@ -157,10 +157,10 @@ def DoJIRAStuff(user,PASSWORD,JIRASERVICE,logger):
  jira_server=JIRASERVICE
  try:
      print("Connecting to JIRA: %s" % jira_server)
-     jira_options = {'server': jira_server}
+     jira_options = {'server': jira_server,'verify':False}
      jira = JIRA(options=jira_options,basic_auth=(user,PASSWORD))
      logger.info("JIRA Authorization OK")
- except Exception,e:
+ except JIRAError as e:
     logger.error("Failed to connect to JIRA: %s" % e)
     sys.exit(304)
  return jira   
@@ -179,7 +179,7 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION,logger):
 
     try:
         new_issue = jiraobj.create_issue(fields=issue_dict)
-    except Exception,e:
+    except JIRAError as e:
         logger.error(("Failed to create JIRA project, error: %s" % e))
         sys.exit(1)
 
@@ -192,7 +192,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
     # URL="{0}/rest/plugins/applications/1.0/installed/jira-software/license".format(JIRASERVICE)  # server license info
     URL="{0}/rest/plugins/1.0/".format(JIRASERVICE) # get plugins # get plugins
     #URL="{0}/rest/api/2/".format(JIRASERVICE)
-    r=requests.get(URL, headers,  auth=(user, PASSWORD))
+    r=requests.get(URL, headers,  auth=(user, PASSWORD), verify=False)
  
     if (DEBUG):
         logger.info("Headers:{0}".format(r.headers))
@@ -222,7 +222,7 @@ def GetStepInfo(jira,JIRASERVICE,user,PASSWORD,DEBUG,logger,THRDAYS,DEVDEBUG):
             if (item["enabled"] and item["userInstalled"] and item["usesLicensing"]): 
                 pluginkey = item["key"]
                 URL="{0}/rest/plugins/1.0/{1}-key/license".format(JIRASERVICE,pluginkey) # license info for one plugin (key)
-                r=requests.get(URL, headers,  auth=(user, PASSWORD))
+                r=requests.get(URL, headers,  auth=(user, PASSWORD), verify=False)
                 if (DEBUG):
                     logger.debug("Headers:{0}".format(r.headers))
                     logger.debug("Message:{0}".format((r.text).encode('utf-8')))
